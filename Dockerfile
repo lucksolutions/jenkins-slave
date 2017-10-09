@@ -9,6 +9,13 @@ USER root
 # Install Git
 RUN apt-get update && apt-get install -y git
 
+# Install AWS CLI
+RUN apt-get install -y python3; \
+    curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"; \
+    unzip awscli-bundle.zip; \
+    ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+
 # Install Docker Prereqs
 RUN apt-get update && apt-get install -y \
         apt-transport-https \
@@ -40,5 +47,6 @@ RUN curl -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION
     mv packer /usr/local/bin/packer; \
     chmod +x /usr/local/bin/packer; \
     rm -f packer.zip
+
 
 USER jenkins
