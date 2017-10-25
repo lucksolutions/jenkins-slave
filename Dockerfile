@@ -7,7 +7,7 @@ ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
 USER root
 
 # Install Git
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git jq
 
 # Install AWS CLI
 RUN apt-get install -y python3; \
