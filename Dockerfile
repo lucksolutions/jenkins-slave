@@ -1,8 +1,11 @@
 FROM jenkinsci/slave
+# Based on Debian
 
+ARG VAULT_URL
 ENV PACKER_VERSION=1.0.4
-ENV MAVEN_VERSION=3.5.0
+ENV MAVEN_VERSION=3.5.2
 ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
+ENV VAULT_ADDR=$VAULT_URL
 
 USER root
 
@@ -34,7 +37,7 @@ RUN apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 # Install Maven
-RUN curl -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hugeserver.com/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hugeserver.com/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
     rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
@@ -42,11 +45,16 @@ RUN curl -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hugese
     
 
 # Packer
-RUN curl -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
+RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
     unzip packer.zip; \
     mv packer /usr/local/bin/packer; \
     chmod +x /usr/local/bin/packer; \
     rm -f packer.zip
 
+# Vault Certificates
+RUN mkdir /usr/local/share/ca-certificates/ascent; \
+    echo "Downloading Vault CA certificate from $VAULT_ADDR/v1/pki/ca/pem"; \
+    curl -L -s --insecure ${VAULT_ADDR}/v1/pki/ca/pem > /usr/local/share/ca-certificates/vault/vault-ca.crt; \
+    update-ca-certificates
 
 USER jenkins
