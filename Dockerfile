@@ -4,6 +4,7 @@ FROM jenkinsci/slave
 ARG VAULT_URL
 ENV PACKER_VERSION=1.0.4
 ENV MAVEN_VERSION=3.5.2
+ENV TERRAFORM_VERSION=0.11.3
 ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
 ENV VAULT_ADDR=$VAULT_URL
 
@@ -51,9 +52,17 @@ RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERS
     chmod +x /usr/local/bin/packer; \
     rm -f packer.zip
 
+# Terraform
+RUN curl -s -L -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip; \
+    unzip terraform.zip; \
+    mv terraform /usr/local/bin/terraform; \
+    chmod +x /usr/local/bin/terraform; \
+    rm -f terraform.zip
+
 # Vault Certificates
 RUN mkdir /usr/local/share/ca-certificates/ascent; \
     echo "Downloading Vault CA certificate from $VAULT_ADDR/v1/pki/ca/pem"; \
+    mkdir -p /usr/local/share/ca-certificates/vault/; \
     curl -L -s --insecure ${VAULT_ADDR}/v1/pki/ca/pem > /usr/local/share/ca-certificates/vault/vault-ca.crt; \
     update-ca-certificates
 
