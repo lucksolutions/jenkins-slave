@@ -5,6 +5,7 @@ ARG VAULT_URL
 ENV PACKER_VERSION=1.0.4
 ENV MAVEN_VERSION=3.5.2
 ENV TERRAFORM_VERSION=0.11.3
+ENV JMETER_VERSION=4.0
 ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
 ENV VAULT_ADDR=$VAULT_URL
 
@@ -58,6 +59,13 @@ RUN curl -s -L -o terraform.zip https://releases.hashicorp.com/terraform/${TERRA
     mv terraform /usr/local/bin/terraform; \
     chmod +x /usr/local/bin/terraform; \
     rm -f terraform.zip
+
+# JMeter
+RUN curl -s -L -o jmeter.zip http://download.nextag.com/apache//jmeter/binaries/apache-jmeter-${JMETER_VERSION}.zip; \
+    unzip jmeter.zip; \
+    mv apache-jmeter-${JMETER_VERSION}/ /usr/local/jmeter/; \
+    rm -f jmeter.zip
+ENV PATH "$PATH:/usr/local/jmeter/bin"
 
 # Vault Certificates
 RUN mkdir /usr/local/share/ca-certificates/ascent; \
