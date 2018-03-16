@@ -67,6 +67,11 @@ RUN curl -s -L -o jmeter.zip http://download.nextag.com/apache//jmeter/binaries/
     rm -f jmeter.zip
 ENV PATH "$PATH:/usr/local/jmeter/bin"
 
+# JMeter Plugins
+RUN curl -s -L -o jpgc-casutg.zip https://jmeter-plugins.org/files/packages/jpgc-casutg-2.5.zip; \
+    unzip jpgc-casutg.zip -d /usr/local/jmeter/; \
+    rm -f jpgc-casutg.zip
+
 # Vault Certificates
 RUN mkdir /usr/local/share/ca-certificates/ascent; \
     echo "Downloading Vault CA certificate from $VAULT_ADDR/v1/pki/ca/pem"; \
