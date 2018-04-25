@@ -81,6 +81,8 @@ RUN mkdir /usr/local/share/ca-certificates/ascent; \
     update-ca-certificates
 
 # Fortify SCA tools
+# We're assuming here that the fortify sca packages and fortify.license are 
+# already installed in /home/ec2-user/fortify-pkgs by packer
 COPY /home/ec2-user/fortify-pkgs/Fortify_SCA.tar.gz /tmp/Fortify_SCA.tar.gz
 COPY /home/ec2-user/fortify-pkgs/fortify.license /tmp/fortify.license
 
