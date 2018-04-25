@@ -8,6 +8,7 @@ ENV TERRAFORM_VERSION=0.11.3
 ENV JMETER_VERSION=4.0
 ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
 ENV VAULT_ADDR=$VAULT_URL
+ENV _JAVA_OPTIONS="-Xmx1g"
 
 USER root
 
@@ -78,5 +79,21 @@ RUN mkdir /usr/local/share/ca-certificates/ascent; \
     mkdir -p /usr/local/share/ca-certificates/vault/; \
     curl -L -s --insecure ${VAULT_ADDR}/v1/pki/ca/pem > /usr/local/share/ca-certificates/vault/vault-ca.crt; \
     update-ca-certificates
+
+# Fortify SCA tools
+COPY /home/ec2-user/fortify-pkgs/Fortify_SCA.tar.gz /tmp/Fortify_SCA.tar.gz
+COPY /home/ec2-user/fortify-pkgs/fortify.license /tmp/fortify.license
+
+RUN mkdir -p /opt/fortify_sca; \
+    tar -xzf /tmp/Fortify_SCA.tar.gz -C /opt/fortify_sca; \
+    echo "fortify_license_path=/opt/fortify_sca/fortify.license" >> /opt/fortify_sca/fortify-sca.options; \
+    echo "InstallSamples=0" >> /opt/fortify_sca/fortify-sca.options; \
+    mv /tmp/fortify.license /opt/fortify_sca/fortify.license; \
+    echo "Installing sca..."; \
+    /opt/fortify_sca/HPE_Security_Fortify_SCA_and_Apps_17.20_linux_x64.run --mode unattended; \
+    ln -s /opt/HPE_Security/Fortify_SCA_and_Apps_17.20/bin/fortifyclient /usr/bin/fortifyclient; \
+    ln -s /opt/HPE_Security/Fortify_SCA_and_Apps_17.20/bin/FPRUtility /usr/bin/FPRUtility; \
+    ln -s /opt/HPE_Security/Fortify_SCA_and_Apps_17.20/bin/sourceanalyzer /usr/bin/sourceanalyzer;
+
 
 USER jenkins
