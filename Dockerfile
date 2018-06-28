@@ -3,7 +3,7 @@ FROM jenkinsci/slave
 
 ARG VAULT_URL
 ENV PACKER_VERSION=1.0.4
-ENV MAVEN_VERSION=3.5.2
+ENV MAVEN_VERSION=3.5.4
 ENV TERRAFORM_VERSION=0.11.3
 ENV JMETER_VERSION=4.0
 ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
@@ -38,14 +38,6 @@ RUN apt-get update && apt-get install -y \
     systemctl disable docker; \
 	rm -rf /var/lib/apt/lists/*
 
-# Install Maven
-RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hugeserver.com/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
-    rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
-    
-
 # Packer
 RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
     unzip packer.zip; \
@@ -78,5 +70,12 @@ RUN mkdir /usr/local/share/ca-certificates/ascent; \
     mkdir -p /usr/local/share/ca-certificates/vault/; \
     curl -L -s --insecure ${VAULT_ADDR}/v1/pki/ca/pem > /usr/local/share/ca-certificates/vault/vault-ca.crt; \
     update-ca-certificates
+
+# Install Maven
+RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+    tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+    mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
+    rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
 
 USER jenkins
