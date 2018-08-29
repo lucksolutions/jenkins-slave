@@ -45,7 +45,7 @@ RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hug
     mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
     rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
-    
+
 
 # Packer
 RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
@@ -80,22 +80,14 @@ RUN mkdir /usr/local/share/ca-certificates/ascent; \
     curl -L -s --insecure ${VAULT_ADDR}/v1/pki/ca/pem > /usr/local/share/ca-certificates/vault/vault-ca.crt; \
     update-ca-certificates
 
-# Fortify SCA tools
-# We're assuming here that the fortify sca packages and fortify.license are 
-# already installed in /home/ec2-user/fortify-pkgs by packer
-COPY /home/ec2-user/fortify-pkgs/Fortify_SCA.tar.gz /tmp/Fortify_SCA.tar.gz
-COPY /home/ec2-user/fortify-pkgs/fortify.license /tmp/fortify.license
+# consul-template
+# Install consul-template to populate secret data into files on container
+RUN curl -s -L -o consul-template_0.19.0_linux_amd64.tgz https://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.tgz; \
+    tar -xzf consul-template_0.19.0_linux_amd64.tgz; \
+    mv consul-template /usr/local/bin/consul-template; \
+    chmod +x /usr/local/bin/consul-template; \
+    rm -f consul-template_0.19.0_linux_amd64.tgz
 
-RUN mkdir -p /opt/fortify_sca; \
-    tar -xzf /tmp/Fortify_SCA.tar.gz -C /opt/fortify_sca; \
-    echo "fortify_license_path=/opt/fortify_sca/fortify.license" >> /opt/fortify_sca/fortify-sca.options; \
-    echo "InstallSamples=0" >> /opt/fortify_sca/fortify-sca.options; \
-    mv /tmp/fortify.license /opt/fortify_sca/fortify.license; \
-    echo "Installing sca..."; \
-    /opt/fortify_sca/HPE_Security_Fortify_SCA_and_Apps_17.20_linux_x64.run --mode unattended; \
-    ln -s /opt/HPE_Security/Fortify_SCA_and_Apps_17.20/bin/fortifyclient /usr/bin/fortifyclient; \
-    ln -s /opt/HPE_Security/Fortify_SCA_and_Apps_17.20/bin/FPRUtility /usr/bin/FPRUtility; \
-    ln -s /opt/HPE_Security/Fortify_SCA_and_Apps_17.20/bin/sourceanalyzer /usr/bin/sourceanalyzer;
 
 
 USER jenkins
