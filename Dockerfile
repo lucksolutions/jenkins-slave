@@ -12,6 +12,9 @@ ENV VAULT_ADDR=$VAULT_URL
 USER root
 
 COPY ./templates /tmp/templates
+RUN chown -R jenkins:jenkins /tmp/templates; \
+    mkdir -p /var/lib/jenkins/docker-certs; \
+    chown jenkins:jenkins /var/lib/jenknis/docker-certs; \
 
 # Install Git
 RUN apt-get update && apt-get install -y git jq
