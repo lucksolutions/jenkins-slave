@@ -39,11 +39,11 @@ RUN apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 # Install Maven
-RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hugeserver.com/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://apache.mirrors.hoobly.com/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
     rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mv
+    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
     
 # Packer
 RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
