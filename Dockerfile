@@ -38,6 +38,13 @@ RUN apt-get update && apt-get install -y \
     systemctl disable docker; \
 	rm -rf /var/lib/apt/lists/*
 
+# Install Maven
+RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hugeserver.com/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+    tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+    mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
+    rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mv
+    
 # Packer
 RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
     unzip packer.zip; \
@@ -71,11 +78,11 @@ RUN mkdir /usr/local/share/ca-certificates/ascent; \
     curl -L -s --insecure ${VAULT_ADDR}/v1/pki/ca/pem > /usr/local/share/ca-certificates/vault/vault-ca.crt; \
     update-ca-certificates
 
-# Install Maven
-RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
-    rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
+# Install consul-template to populate secret data into files on container
+RUN curl -s -L -o consul-template_0.19.0_linux_amd64.tgz https://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.tgz; \
+    tar -xzf consul-template_0.19.0_linux_amd64.tgz; \
+    mv consul-template /usr/local/bin/consul-template; \
+    chmod +x /usr/local/bin/consul-template; \
+    rm -f consul-template_0.19.0_linux_amd64.tgz
 
 USER jenkins
