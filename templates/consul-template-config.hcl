@@ -19,13 +19,13 @@ template {
 }
 
 template {
-  source = "/tmp/templates/server.crt.tpl"
-  destination = "/etc/docker-latest/certs/server.crt"
+  source = "/tmp/templates/docker_swarm.crt.tpl"
+  destination = "/etc/docker-latest/certs/docker_swarm.crt"
   perms = 0644
 }
 
 template {
-  source = "/tmp/templates/server.key.tpl"
-  destination = "/etc/docker-latest/certs/server.key"
+  source = "/tmp/templates/docker_swarm.key.tpl"
+  destination = "/etc/docker-latest/certs/docker_swarm.key"
   perms = 0644
 }
