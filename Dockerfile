@@ -11,6 +11,8 @@ ENV VAULT_ADDR=$VAULT_URL
 
 USER root
 
+COPY ./templates /tmp/templates
+
 # Install Git
 RUN apt-get update && apt-get install -y git jq
 
@@ -44,7 +46,7 @@ RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://apache.mirrors
     mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
     rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
-    
+
 # Packer
 RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
     unzip packer.zip; \
