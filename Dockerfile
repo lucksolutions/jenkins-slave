@@ -3,7 +3,7 @@ FROM jenkinsci/slave
 
 ARG VAULT_URL
 ENV PACKER_VERSION=1.0.4
-ENV MAVEN_VERSION=3.5.2
+ENV MAVEN_VERSION=3.5.4
 ENV TERRAFORM_VERSION=0.11.3
 ENV JMETER_VERSION=4.0
 ENV MAVEN_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
@@ -43,9 +43,8 @@ RUN curl -s -L -o apache-maven-${MAVEN_VERSION}-bin.tar.gz http://mirror.jax.hug
     tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
     mv apache-maven-${MAVEN_VERSION} ${MAVEN_HOME}; \
     rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
-    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
-
-
+    ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mv
+    
 # Packer
 RUN curl -s -L -o packer.zip https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip; \
     unzip packer.zip; \
@@ -85,7 +84,5 @@ RUN curl -s -L -o consul-template_0.19.0_linux_amd64.tgz https://releases.hashic
     mv consul-template /usr/local/bin/consul-template; \
     chmod +x /usr/local/bin/consul-template; \
     rm -f consul-template_0.19.0_linux_amd64.tgz
-
-
 
 USER jenkins
