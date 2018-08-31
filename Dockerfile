@@ -16,7 +16,7 @@ COPY ./templates /tmp/templates
 #    the certs are going because that's controlled at build time.
 RUN chown -R jenkins:jenkins /tmp/templates; \
     mkdir -p /var/lib/jenkins/docker-certs; \
-    chown jenkins:jenkins /var/lib/jenkins/docker-certs; \
+    chown jenkins:jenkins /var/lib/jenkins/docker-certs;
 
 # Install Git
 RUN apt-get update && apt-get install -y git jq
