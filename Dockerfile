@@ -87,7 +87,8 @@ RUN mkdir /usr/local/share/ca-certificates/ascent; \
 
 # Install Vault Certificate into Java Trusted Keystore
 RUN keytool -importcert -alias vault -keystore "$JAVA_HOME/jre/lib/security/cacerts" -noprompt -storepass changeit -file /usr/local/share/ca-certificates/vault/vault-ca.crt
-RUN chmod 666 "$JAVA_HOME/jre/lib/security/cacerts"
+RUN chmod 666 "$JAVA_HOME/jre/lib/security/cacerts"; \
+    chmod 666 /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/cacerts
 
 # Install consul-template to populate secret data into files on container
 RUN curl -s -L -o consul-template_0.19.0_linux_amd64.tgz https://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.tgz; \
