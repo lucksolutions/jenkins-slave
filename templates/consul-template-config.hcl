@@ -14,18 +14,18 @@ vault {
 
 template {
   source = "/tmp/templates/ca.crt.tpl"
-  destination = "/var/lib/jenkins/docker-certs/ca.crt"
+  destination = "/var/lib/jenkins/docker-certs/[CA_FILE_NAME]_ca.crt"
   perms = 0644
 }
 
 template {
   source = "/tmp/templates/docker_swarm.crt.tpl"
-  destination = "/var/lib/jenkins/docker-certs/docker_swarm.crt"
+  destination = "/var/lib/jenkins/docker-certs/[CERT_FILE_NAME].crt"
   perms = 0644
 }
 
 template {
   source = "/tmp/templates/docker_swarm.key.tpl"
-  destination = "/var/lib/jenkins/docker-certs/docker_swarm.key"
+  destination = "/var/lib/jenkins/docker-certs/[CERT_FILE_NAME].key"
   perms = 0644
 }
